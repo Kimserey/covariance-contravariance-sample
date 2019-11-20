@@ -51,24 +51,20 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            // Contravariance:
-            // -----------
-            // less derived type is used in the implementation generic type,
-            // and less derived type is used ONLY as input values,
-            // therefore can be assigned to derived type.
-            IContravariance<Message> d = new Contravariance();
-            IContravariance<TitledMessage> f = d;
-            f.Do(new TitledMessage {Content = "Hello world"});
-
             // Covariance:
             // ----------
-            // derived type is used in the implementation generic type,
-            // and derived type is used ONLY as output values,
-            // therefore can be assigned to less derived type.
+            // Derived type assigned to type
             ICovariance<TitledMessage> a = new Covariance();
             ICovariance<Message> b = a;
             Message v = b.Create("Hello world");
             Console.WriteLine(v.Content);
+
+            // Contravariance:
+            // -----------
+            // Less derived type assigned to derived type
+            IContravariance<Message> d = new Contravariance();
+            IContravariance<TitledMessage> f = d;
+            f.Do(new TitledMessage {Content = "Hello world"});
         }
     }
 }
