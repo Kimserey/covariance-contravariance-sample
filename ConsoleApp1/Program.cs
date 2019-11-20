@@ -12,12 +12,12 @@ namespace ConsoleApp1
         public string Title { get; set; }
     }
 
-    public interface ICovariance<in T>
+    public interface IContravariance<in T>
     {
         void Do(T test);
     }
 
-    public class Covariance : ICovariance<Message>
+    public class Contravariance : IContravariance<Message>
     {
         public void Do(Message test)
         {
@@ -25,12 +25,12 @@ namespace ConsoleApp1
         }
     }
 
-    public interface IContravariance<out T>
+    public interface ICovariance<out T>
     {
         T Create(string msg);
     }
 
-    public class Contravariance : IContravariance<TitledMessage>
+    public class Covariance : ICovariance<TitledMessage>
     {
         public TitledMessage Create(string msg)
         {
@@ -42,24 +42,32 @@ namespace ConsoleApp1
         }
     }
 
+    public interface IX<out T>
+    {
+        T Do(T x, Action<T> d);
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            // Covariance:
+            // Contravariance:
             // -----------
             // less derived type is used in the implementation generic type,
             // and less derived type is used ONLY as input values,
             // therefore can be assigned to derived type.
-            ICovariance<TitledMessage> test = new Covariance();
-            test.Do(new TitledMessage {Content = "Hello world"});
+            IContravariance<Message> d = new Contravariance();
+            IContravariance<TitledMessage> f = d;
+            f.Do(new TitledMessage {Content = "Hello world"});
 
-            // Contravariance:
+            // Covariance:
+            // ----------
             // derived type is used in the implementation generic type,
             // and derived type is used ONLY as output values,
             // therefore can be assigned to less derived type.
-            IContravariance<Message> contravariance = new Contravariance();
-            Message v = contravariance.Create("Hello world");
+            ICovariance<TitledMessage> a = new Covariance();
+            ICovariance<Message> b = a;
+            Message v = b.Create("Hello world");
             Console.WriteLine(v.Content);
         }
     }
